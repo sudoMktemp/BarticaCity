@@ -3,7 +3,12 @@
   import react from '@vitejs/plugin-react-swc';
   import path from 'path';
 
-  export default defineConfig({
+  // Use VITE_BASE_PATH (injected by the workflow) for correct asset and route paths.
+  // Falls back to '/' for local dev or user site repos.
+  export default defineConfig(() => {
+    const base = process.env.VITE_BASE_PATH || '/';
+    return {
+      base,
     plugins: [react()],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
@@ -50,12 +55,13 @@
         '@': path.resolve(__dirname, './src'),
       },
     },
-    build: {
-      target: 'esnext',
-      outDir: 'build',
-    },
-    server: {
-      port: 3000,
-      open: true,
-    },
+      build: {
+        target: 'esnext',
+        outDir: 'dist',
+      },
+      server: {
+        port: 3000,
+        open: true,
+      },
+    };
   });
